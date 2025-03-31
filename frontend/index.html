@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delmarva Beach City University - Student Information System</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* DBCU Color Variables */
+    :root {
+      --dbcu-dark-blue: #00296b;
+      --dbcu-blue: #003e87;
+      --dbcu-gold: #fdc067;
+      --dbcu-light-gold: #ffecd1;
+    }
+
+    /* Slideshow background */
+    .slideshow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 41, 107, 0.5); /* Dark blue overlay */
+    }
+
+    /* Header styles */
+    header {
+      background-color: var(--dbcu-dark-blue);
+      padding: 16px 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      height: 80px; /* Increased from 60px to 80px */
+      width: auto;
+    }
+
+    .site-title {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.5px;
+      color: var(--dbcu-gold);
+    }
+
+    .site-title .short {
+      font-weight: bold;
+      font-size: 28px;
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--dbcu-gold);
+    }
+
+    /* Main content */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      padding: 32px;
+      border-top: 5px solid var(--dbcu-gold);
+    }
+
+    .login-title {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 32px;
+      color: var(--dbcu-dark-blue);
+    }
+
+    .info-box {
+      background-color: var(--dbcu-light-gold);
+      border-left: 4px solid var(--dbcu-gold);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .info-text {
+      color: var(--dbcu-dark-blue);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    label {
+      display: block;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    .forgot-link {
+      color: var(--dbcu-blue);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--dbcu-dark-blue);
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--dbcu-blue);
+      box-shadow: 0 0 0 2px rgba(0, 62, 135, 0.2);
+    }
+
+    .login-btn {
+      width: 100%;
+      background-color: var(--dbcu-blue);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .login-btn:hover {
+      background-color: var(--dbcu-dark-blue);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dbcu-dark-blue);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-text {
+      font-size: 14px;
+    }
+
+    .footer-dbcu {
+      color: var(--dbcu-gold);
+      font-weight: bold;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+      }
+
+      .login-card {
+        padding: 24px;
+      }
+      
+      .site-title {
+        font-size: 18px;
+      }
+      
+      .site-title .short {
+        font-size: 22px;
+      }
+      
+      .logo {
+        height: 65px; /* Increased from 50px to 65px for mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Slideshow Background -->
+  <div class="slideshow-container">
+    <div class="slide active">
+      <div class="slide-overlay"></div>
+    </div>
+    <div class="slide">
+      <div class="slide-overlay"></div>
+    </div>
+    <div class="slide">
+      <div class="slide-overlay"></div>
+    </div>
+    <div class="slide">
+      <div class="slide-overlay"></div>
+    </div>
+    <div class="slide">
+      <div class="slide-overlay"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="dbculogo.png" alt="DBCU Logo" class="logo">
+        <h1 class="site-title">DELMARVA BEACH CITY UNIVERSITY</h1>
+      </div>
+      <nav>
+        <a href="#">About</a>
+        <a href="#">Admissions</a>
+        <a href="#">Financial Aid</a>
+        <a href="#">Academics</a>
+        <a href="#">Life at Delmarva</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="login-container">
+      <div class="login-card">
+        <h2 class="login-title">MyDBCU Portal</h2>
+        
+        <div class="info-box">
+          <p class="info-text">To access your MyDBCU Portal, please enter your DBCU email and password.</p>
+        </div>
+        
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="username@dbcu.edu" required>
+          </div>
+          
+          <div class="form-group">
+            <div class="form-header">
+              <label for="password">Password</label>
+              <a href="#" class="forgot-link">Forgot Your Password?</a>
+            </div>
+            <input type="password" id="password" required>
+          </div>
+          
+          <button type="submit" class="login-btn">Login</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p class="footer-text">© <span id="current-year"></span> <span class="footer-dbcu">Delmarva Beach City University</span> • All rights reserved</p>
+  </footer>
+
+  <script>
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Slideshow functionality
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    
+    // Set background images for slides - using reliable direct image URLs
+    const slideImages = [
+      // Library high angle view
+      'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg',
+      // Library interior
+      'https://images.pexels.com/photos/12064/pexels-photo-12064.jpeg',
+      // University building exterior
+      'https://images.pexels.com/photos/207684/pexels-photo-207684.jpeg',
+      // Students conversing on campus
+      'https://images.pexels.com/photos/1438084/pexels-photo-1438084.jpeg',
+      // Students studying outdoors
+      'https://images.pexels.com/photos/6147276/pexels-photo-6147276.jpeg'
+    ];
+    
+    // Initialize slide backgrounds
+    slides.forEach((slide, index) => {
+      slide.style.backgroundImage = `url(${slideImages[index]})`;
+    });
+
+    // Function to show a specific slide
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+      currentSlide = index;
+    }
+
+    // Next slide function
+    function nextSlide() {
+      const next = (currentSlide + 1) % slides.length;
+      showSlide(next);
+    }
+
+    // Auto-advance slideshow
+    setInterval(nextSlide, 5000);
+
+    // Handle form submission
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      console.log('Login attempt with:', email, password);
+      // Here you would typically send the data to a server
+      alert('Login successful! Welcome to the DBCU Student Information System.');
+    });
+  </script>
+</body>
+</html>
